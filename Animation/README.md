@@ -10,4 +10,26 @@ https://github.com/user-attachments/assets/17fa49ae-7a27-48e3-a1ef-cfca0013e07e
 https://github.com/user-attachments/assets/11a1c6d6-b43a-48f4-8249-a1af1ad4ae67
 
 ## How the objects were imported to Unreal
-1. Export 
+1. Export as .fbx format.
+2. In Unreal Engine drag and pull to content drawer.
+![image](https://github.com/user-attachments/assets/33e6b0ba-8e94-45b9-89ba-a6523137489c)
+3. Then modify the model's geometry, materials, and textures (explain in video).
+
+## How to create animation (explain in video)
+1. moving objects
+   a. Bulb
+   b. Pendants
+   c. Lamp Cover
+   d. Hook
+   e. Chain
+   f. Switch
+   g. Point Light
+2. moving camera
+   a. higher view to lower view
+   b. outdoor to indoor
+3. other animations
+   a. On light
+   b. Off light
+   c. Pull swicth
+   d. Sway the lamp
+   
