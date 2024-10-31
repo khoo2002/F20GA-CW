@@ -17,19 +17,19 @@ https://github.com/user-attachments/assets/11a1c6d6-b43a-48f4-8249-a1af1ad4ae67
 
 ## How to create animation (explain in video)
 1. moving objects
-a. Bulb
-b. Pendants
-c. Lamp Cover
-d. Hook
-e. Chain
-f. Switch
-g. Point Light
-3. moving camera
-a. higher view to lower view
-b. outdoor to indoor
-5. other animations
-   a. On light
-   b. Off light
-   c. Pull swicth
-   d. Sway the lamp
+   1. Bulb
+   2. Pendants
+   3. Lamp Cover
+   4. Hook
+   5. Chain
+   6. Switch
+   7. Point Light
+2. moving camera
+   1. higher view to lower view
+   2. outdoor to indoor
+3. other animations
+   1. On light
+   2. Off light
+   3. Pull swicth
+   4. Sway the lamp
    
