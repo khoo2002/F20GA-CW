@@ -1,5 +1,8 @@
 # F20GA-CW
 
+## Only if you cannot access:
+https://heriotwatt-my.sharepoint.com/:f:/r/personal/zk2022_hw_ac_uk/Documents/zhaowei/F20GA?csf=1&web=1&e=tiEHmI
 
-https://github.com/user-attachments/assets/b4544ab6-b565-4281-b631-fb5603f81de0
+## Output video:
+https://github.com/user-attachments/assets/17fa49ae-7a27-48e3-a1ef-cfca0013e07e
 
