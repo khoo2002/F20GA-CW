@@ -59,9 +59,8 @@ the lamp cover, the bulb, a chain at the top, decorative teardrop-shaped diamond
   ![Final_Render_02(LightOn)](https://github.com/user-attachments/assets/9adf92c6-60fe-4f68-9af5-da83900ff3e8)
 
 ## Explaination Video
-
-
+  https://github.com/user-attachments/assets/f6160be1-f377-4c10-ab77-369a781142ed
 
 ---
 Just in case if the explaination video cannot open, please refer this link:
-https://heriotwatt-my.sharepoint.com/:v:/g/personal/jl2122_hw_ac_uk/ERWE8W7WaIpPnqJxWoDJJ2sBiBoYNA8fbB-2oY9wzaCO4Q?e=IyfOST
+   https://heriotwatt-my.sharepoint.com/:v:/g/personal/jl2122_hw_ac_uk/EfTFAmGyMK9NodheU4lbGwYBuZvQlMPRkSfL_r7f8NpEQA?e=abAOLw
