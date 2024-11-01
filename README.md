@@ -7,7 +7,7 @@ The lamp is divided into five main parts:
 2. Lamp Cover – The outer shell surrounding the bulb.
 3. Bulb – The light source, activated by interaction.
 4. Diamond Pendants – Decorative elements hanging below the lamp cover.
-Pull-type Light Switch – Used to turn the light on and off.
+5. Pull-type Light Switch – Used to turn the light on and off.
 
 # Scene Setup
 A simple indoor layout with ceiling and walls.
