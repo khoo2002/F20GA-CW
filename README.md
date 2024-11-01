@@ -5,7 +5,7 @@ This coursework, we decided to create a detailed lamp model with animated and in
 The lamp is divided into five main parts:
 1. Chains – Supporting chains that connect to the ceiling.
 2. Lamp Cover – The outer shell surrounding the bulb.
-3. Bulb – The light source, activated by interaction.
+3. Bulb – The light source.
 4. Diamond Pendants – Decorative elements hanging below the lamp cover.
 5. Pull-type Light Switch – Used to turn the light on and off.
 
