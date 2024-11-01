@@ -8,8 +8,8 @@ https://github.com/user-attachments/assets/17fa49ae-7a27-48e3-a1ef-cfca0013e07e
 
 ## Explanation video:
 https://github.com/user-attachments/assets/11a1c6d6-b43a-48f4-8249-a1af1ad4ae67
-if the explanation mp4 cannot be played, kindly refer to the link:
-https://heriotwatt-my.sharepoint.com/:v:/g/personal/jl2122_hw_ac_uk/Ecant2PBxOtIprHZmEz8bT0BkD-YDP2uX3VwreSzOR4yaw?e=uA2HRJ
+- if the explanation mp4 cannot be played, kindly refer to the link:
+- https://heriotwatt-my.sharepoint.com/:v:/g/personal/jl2122_hw_ac_uk/Ecant2PBxOtIprHZmEz8bT0BkD-YDP2uX3VwreSzOR4yaw?e=uA2HRJ
 
 ## How the objects were imported to Unreal
 1. Export as .fbx format.
