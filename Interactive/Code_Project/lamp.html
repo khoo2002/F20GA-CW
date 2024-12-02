@@ -39,7 +39,7 @@
     // Load .obj file
     const loader = new OBJLoader();
     loader.load(
-      'http://localhost:5500/meshes/final_model_in_one.obj', // Path to your OBJ file
+      'meshes/final_model_in_one.obj', // Path to your OBJ file
       (object) => {
         object.position.set(0, 0, -60); // Position the object
         // object.rotation.set(Math.PI / 4, Math.PI / 4, Math.PI / 4); // Rotate 45° on each axis
