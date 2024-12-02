@@ -12,7 +12,8 @@
     {
       "imports": {
         "three": "https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js",
-        "three/examples/jsm/loaders/OBJLoader": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/loaders/OBJLoader.js"
+        "three/examples/jsm/loaders/OBJLoader": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/loaders/OBJLoader.js",
+        "three/examples/jsm/loaders/MTLLoader": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/loaders/MTLLoader.js"
       }
     }
   </script>
@@ -21,45 +22,221 @@
   <script type="module">
     import * as THREE from 'three';
     import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
+    import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 
 
     // Scene setup
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer();
+
+    camera.position.set(5, 5, 5); // Place camera at (5, 5, 5)
+    camera.lookAt(0, 0, 0);       // Point it toward the origin (0, 0, 0)
+
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
     // Add lighting
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(10, 9, 10).normalize();
+    const light = new THREE.DirectionalLight(0xffffff, 3);
+    light.position.set(100, 100, 100).normalize();
     scene.add(light);
 
-    // Load .obj file
-    const loader = new OBJLoader();
-    loader.load(
-      'meshes/final_model_in_one.obj', // Path to your OBJ file
-      (object) => {
-        object.position.set(0, 0, -60); // Position the object
-        // object.rotation.set(Math.PI / 4, Math.PI / 4, Math.PI / 4); // Rotate 45° on each axis
-        object.rotation.set(0, Math.PI / 2, 0); // Rotate 45° on each axis
-        scene.add(object);
+    // Array to store all loaded objects
+    let chainLeft;
+    let chainRight;
+    let lamp;
+    let pendant;
+    let _switch;
+
+    let scale = 0.4;
+    
+    const mtlLoader = new MTLLoader();
+    const objLoader = new OBJLoader();
+    //load lamp
+    mtlLoader.load(
+      'meshes/lamp.mtl',
+      (materials) => {
+        materials.preload(); // Preload the materials
+
+        // Load the OBJ file and apply the loaded materials
+        objLoader.setMaterials(materials);
+        objLoader.load(
+          'meshes/lamp.obj',
+          (object) => {
+            object.position.set(0, 2, 0);
+            object.scale.set(scale,scale,scale); // Normalize scale
+            scene.add(object);
+            lamp = object;
+
+            // Debug helper
+            const boxHelper = new THREE.BoxHelper(object, 0xff0000);
+            scene.add(boxHelper);
+          },
+          (xhr) => {
+            console.log(`Lamp loading: ${(xhr.loaded / xhr.total) * 100}% loaded`);
+          },
+          (error) => {
+            console.error('Error loading lamp.obj:', error);
+          }
+        );
       },
       (xhr) => {
-        console.log(`Loading: ${(xhr.loaded / xhr.total) * 100}% loaded`);
+        console.log(`MTL loading: ${(xhr.loaded / xhr.total) * 100}% loaded`);
       },
       (error) => {
-        console.error('An error happened while loading the model', error);
+        console.error('Error loading lamp.mtl:', error);
+      }
+    );
+
+    //load chainLeft
+    mtlLoader.load(
+      'meshes/chain.mtl',
+      (materials) => {
+        materials.preload(); // Preload the materials
+
+        // Load the OBJ file for the chain and apply the loaded materials
+        const objLoader = new OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.load(
+          'meshes/chain.obj',
+          (object) => {
+            object.position.set(0, 2, 0); // Offset position
+            object.scale.set(scale,scale,scale); // Normalize scale
+            scene.add(object);
+            chainLeft = object;
+
+            // Debug helper
+            const boxHelper = new THREE.BoxHelper(object, 0x00ff00);
+            scene.add(boxHelper);
+          },
+          (xhr) => {
+            console.log(`Chain loading: ${(xhr.loaded / xhr.total) * 100}% loaded`);
+          },
+          (error) => {
+            console.error('Error loading chain.obj:', error);
+          }
+        );
+      },
+      (xhr) => {
+        console.log(`MTL loading for chain: ${(xhr.loaded / xhr.total) * 100}% loaded`);
+      },
+      (error) => {
+        console.error('Error loading chain.mtl:', error);
       }
     );
     
+    //load chainRight
+    mtlLoader.load(
+      'meshes/chain.mtl',
+      (materials) => {
+        materials.preload(); // Preload the materials
 
-    // Position the camera
-    camera.position.z = 0;
-    camera.position.y = 4;
-    // camera.position.x = 0;
-    
+        // Load the OBJ file for the chain and apply the loaded materials
+        const objLoader = new OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.load(
+          'meshes/chain.obj',
+          (object) => {
+            object.position.set(0, 2, 0); // Offset position
+            object.scale.set(scale,scale,scale); // Normalize scale
+            scene.add(object);
+            chainRight = object;
+
+            // Debug helper
+            const boxHelper = new THREE.BoxHelper(object, 0x00ff00);
+            scene.add(boxHelper);
+          },
+          (xhr) => {
+            console.log(`Chain loading: ${(xhr.loaded / xhr.total) * 100}% loaded`);
+          },
+          (error) => {
+            console.error('Error loading chain.obj:', error);
+          }
+        );
+      },
+      (xhr) => {
+        console.log(`MTL loading for chain: ${(xhr.loaded / xhr.total) * 100}% loaded`);
+      },
+      (error) => {
+        console.error('Error loading chain.mtl:', error);
+      }
+    );
+
+    //load pendant
+    mtlLoader.load(
+      'meshes/pendant.mtl',
+      (materials) => {
+        materials.preload(); // Preload the materials
+
+        // Load the OBJ file for the chain and apply the loaded materials
+        const objLoader = new OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.load(
+          'meshes/pendant.obj',
+          (object) => {
+            object.position.set(0, 2, 0); // Offset position
+            object.scale.set(scale,scale,scale); // Normalize scale
+            scene.add(object);
+            pendant = object;
+
+            // Debug helper
+            const boxHelper = new THREE.BoxHelper(object, 0x00ff00);
+            scene.add(boxHelper);
+          },
+          (xhr) => {
+            console.log(`Chain loading: ${(xhr.loaded / xhr.total) * 100}% loaded`);
+          },
+          (error) => {
+            console.error('Error loading chain.obj:', error);
+          }
+        );
+      },
+      (xhr) => {
+        console.log(`MTL loading for chain: ${(xhr.loaded / xhr.total) * 100}% loaded`);
+      },
+      (error) => {
+        console.error('Error loading chain.mtl:', error);
+      }
+    );
+
+    //load _switch
+    mtlLoader.load(
+      'meshes/switch.mtl',
+      (materials) => {
+        materials.preload(); // Preload the materials
+
+        // Load the OBJ file for the chain and apply the loaded materials
+        const objLoader = new OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.load(
+          'meshes/switch.obj',
+          (object) => {
+            object.position.set(0, 2, 0); // Offset position
+            object.scale.set(0.8, 0.8, 0.8); // Normalize scale
+            scene.add(object);
+            _switch = object;
+
+            // Debug helper
+            const boxHelper = new THREE.BoxHelper(object, 0x00ff00);
+            scene.add(boxHelper);
+          },
+          (xhr) => {
+            console.log(`Chain loading: ${(xhr.loaded / xhr.total) * 100}% loaded`);
+          },
+          (error) => {
+            console.error('Error loading chain.obj:', error);
+          }
+        );
+      },
+      (xhr) => {
+        console.log(`MTL loading for chain: ${(xhr.loaded / xhr.total) * 100}% loaded`);
+      },
+      (error) => {
+        console.error('Error loading chain.mtl:', error);
+      }
+    );
+
     // Animation loop
     function animate() {
       requestAnimationFrame(animate);
