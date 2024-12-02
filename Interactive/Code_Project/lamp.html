@@ -13,7 +13,8 @@
       "imports": {
         "three": "https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js",
         "three/examples/jsm/loaders/OBJLoader": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/loaders/OBJLoader.js",
-        "three/examples/jsm/loaders/MTLLoader": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/loaders/MTLLoader.js"
+        "three/examples/jsm/loaders/MTLLoader": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/loaders/MTLLoader.js",
+        "three/examples/jsm/controls/OrbitControls": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/controls/OrbitControls.js"
       }
     }
   </script>
@@ -23,14 +24,15 @@
     import * as THREE from 'three';
     import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
     import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
-
+    import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
     // Scene setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer();
+    document.body.appendChild(renderer.domElement);
 
-    camera.position.set(5, 5, 5); // Place camera at (5, 5, 5)
+    camera.position.set(5, 3, 5); // Place camera at (5, 5, 5)
     camera.lookAt(0, 0, 0);       // Point it toward the origin (0, 0, 0)
 
 
@@ -38,7 +40,7 @@
     document.body.appendChild(renderer.domElement);
 
     // Add lighting
-    const light = new THREE.DirectionalLight(0xffffff, 3);
+    const light = new THREE.DirectionalLight(0xffffff, 8);
     light.position.set(100, 100, 100).normalize();
     scene.add(light);
 
@@ -49,201 +51,106 @@
     let pendant;
     let _switch;
 
-    let scale = 0.4;
+    let loadedObjects = {
+      chainLeft: null,
+      chainRight: null,
+      lamp: null,
+      pendant: null,
+      _switch: null
+    };
+    let scale = 0.9;
+
+  // Assuming loadObject is a function that returns a Promise
+  function loadObject(objPath, mtlPath, initialPosition, scale, color) {
+    return new Promise((resolve, reject) => {
+      const mtlLoader = new MTLLoader();
+      mtlLoader.load(mtlPath, (materials) => {
+        materials.preload();
+        const objLoader = new OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.load(objPath, (object) => {
+          object.position.copy(initialPosition);
+          object.scale.set(scale, scale, scale);
+          const boxHelper = new THREE.BoxHelper(object, color);
+          scene.add(boxHelper);
+          // if (color) {
+          //   object.traverse((child) => {
+          //     if (child.isMesh) {
+          //       child.material.color.set(color);
+          //     }
+          //   });
+          // }
+          scene.add(object);
+          resolve(object);
+        }, undefined, reject);
+      }, undefined, reject);
+    });
+  }
+    // Load objects and assign them to the loadedObjects object
+    loadObject('meshes/lamp.obj', 'meshes/lamp.mtl',
+     new THREE.Vector3(0*scale, 2.8*scale, 0*scale), scale, 0xff0000)
+      .then(object => loadedObjects.lamp = object);
+
+    //left chain
+    loadObject('meshes/chain.obj', 'meshes/chain.mtl',
+     new THREE.Vector3(0*scale, 7.78*scale, 1.25*scale), scale, 0x00ff00)
+      .then(object => loadedObjects.chainRight = object);
+
+    //right chain
+    loadObject('meshes/chain.obj', 'meshes/chain.mtl',
+     new THREE.Vector3(0*scale, 7.78*scale, -1.2*scale), scale, 0x0000ff)
+      .then(object => loadedObjects.chainLeft = object);
+
+    loadObject('meshes/pendant.obj', 'meshes/pendant.mtl',
+     new THREE.Vector3(0*scale, 0*scale, 0*scale), scale, 0xffff00)
+      .then(object => loadedObjects.pendant = object);
+
+    loadObject('meshes/switch.obj', 'meshes/switch.mtl',
+     new THREE.Vector3(0*scale, -1.6*scale, -1.0*scale), scale, 0xff00ff)
+      .then(object => loadedObjects._switch = object);
+
+    // Track the cursor position
+    let cursorX = 0;
+    let cursorY = 0;
+
+    window.addEventListener('mousemove', (event) => {
+      // Normalize cursor position to range [-1, 1] for both X and Y
+      cursorX = (event.clientX / window.innerWidth) * 2 - 1;
+      cursorY = -(event.clientY / window.innerHeight) * 2 + 1;
+      
+    });
     
-    const mtlLoader = new MTLLoader();
-    const objLoader = new OBJLoader();
-    //load lamp
-    mtlLoader.load(
-      'meshes/lamp.mtl',
-      (materials) => {
-        materials.preload(); // Preload the materials
-
-        // Load the OBJ file and apply the loaded materials
-        objLoader.setMaterials(materials);
-        objLoader.load(
-          'meshes/lamp.obj',
-          (object) => {
-            object.position.set(0, 2, 0);
-            object.scale.set(scale,scale,scale); // Normalize scale
-            scene.add(object);
-            lamp = object;
-
-            // Debug helper
-            const boxHelper = new THREE.BoxHelper(object, 0xff0000);
-            scene.add(boxHelper);
-          },
-          (xhr) => {
-            console.log(`Lamp loading: ${(xhr.loaded / xhr.total) * 100}% loaded`);
-          },
-          (error) => {
-            console.error('Error loading lamp.obj:', error);
-          }
-        );
-      },
-      (xhr) => {
-        console.log(`MTL loading: ${(xhr.loaded / xhr.total) * 100}% loaded`);
-      },
-      (error) => {
-        console.error('Error loading lamp.mtl:', error);
-      }
-    );
-
-    //load chainLeft
-    mtlLoader.load(
-      'meshes/chain.mtl',
-      (materials) => {
-        materials.preload(); // Preload the materials
-
-        // Load the OBJ file for the chain and apply the loaded materials
-        const objLoader = new OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.load(
-          'meshes/chain.obj',
-          (object) => {
-            object.position.set(0, 2, 0); // Offset position
-            object.scale.set(scale,scale,scale); // Normalize scale
-            scene.add(object);
-            chainLeft = object;
-
-            // Debug helper
-            const boxHelper = new THREE.BoxHelper(object, 0x00ff00);
-            scene.add(boxHelper);
-          },
-          (xhr) => {
-            console.log(`Chain loading: ${(xhr.loaded / xhr.total) * 100}% loaded`);
-          },
-          (error) => {
-            console.error('Error loading chain.obj:', error);
-          }
-        );
-      },
-      (xhr) => {
-        console.log(`MTL loading for chain: ${(xhr.loaded / xhr.total) * 100}% loaded`);
-      },
-      (error) => {
-        console.error('Error loading chain.mtl:', error);
-      }
-    );
-    
-    //load chainRight
-    mtlLoader.load(
-      'meshes/chain.mtl',
-      (materials) => {
-        materials.preload(); // Preload the materials
-
-        // Load the OBJ file for the chain and apply the loaded materials
-        const objLoader = new OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.load(
-          'meshes/chain.obj',
-          (object) => {
-            object.position.set(0, 2, 0); // Offset position
-            object.scale.set(scale,scale,scale); // Normalize scale
-            scene.add(object);
-            chainRight = object;
-
-            // Debug helper
-            const boxHelper = new THREE.BoxHelper(object, 0x00ff00);
-            scene.add(boxHelper);
-          },
-          (xhr) => {
-            console.log(`Chain loading: ${(xhr.loaded / xhr.total) * 100}% loaded`);
-          },
-          (error) => {
-            console.error('Error loading chain.obj:', error);
-          }
-        );
-      },
-      (xhr) => {
-        console.log(`MTL loading for chain: ${(xhr.loaded / xhr.total) * 100}% loaded`);
-      },
-      (error) => {
-        console.error('Error loading chain.mtl:', error);
-      }
-    );
-
-    //load pendant
-    mtlLoader.load(
-      'meshes/pendant.mtl',
-      (materials) => {
-        materials.preload(); // Preload the materials
-
-        // Load the OBJ file for the chain and apply the loaded materials
-        const objLoader = new OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.load(
-          'meshes/pendant.obj',
-          (object) => {
-            object.position.set(0, 2, 0); // Offset position
-            object.scale.set(scale,scale,scale); // Normalize scale
-            scene.add(object);
-            pendant = object;
-
-            // Debug helper
-            const boxHelper = new THREE.BoxHelper(object, 0x00ff00);
-            scene.add(boxHelper);
-          },
-          (xhr) => {
-            console.log(`Chain loading: ${(xhr.loaded / xhr.total) * 100}% loaded`);
-          },
-          (error) => {
-            console.error('Error loading chain.obj:', error);
-          }
-        );
-      },
-      (xhr) => {
-        console.log(`MTL loading for chain: ${(xhr.loaded / xhr.total) * 100}% loaded`);
-      },
-      (error) => {
-        console.error('Error loading chain.mtl:', error);
-      }
-    );
-
-    //load _switch
-    mtlLoader.load(
-      'meshes/switch.mtl',
-      (materials) => {
-        materials.preload(); // Preload the materials
-
-        // Load the OBJ file for the chain and apply the loaded materials
-        const objLoader = new OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.load(
-          'meshes/switch.obj',
-          (object) => {
-            object.position.set(0, 2, 0); // Offset position
-            object.scale.set(0.8, 0.8, 0.8); // Normalize scale
-            scene.add(object);
-            _switch = object;
-
-            // Debug helper
-            const boxHelper = new THREE.BoxHelper(object, 0x00ff00);
-            scene.add(boxHelper);
-          },
-          (xhr) => {
-            console.log(`Chain loading: ${(xhr.loaded / xhr.total) * 100}% loaded`);
-          },
-          (error) => {
-            console.error('Error loading chain.obj:', error);
-          }
-        );
-      },
-      (xhr) => {
-        console.log(`MTL loading for chain: ${(xhr.loaded / xhr.total) * 100}% loaded`);
-      },
-      (error) => {
-        console.error('Error loading chain.mtl:', error);
-      }
-    );
+    // Add OrbitControls for camera interaction
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.25;
+    controls.screenSpacePanning = false;
+    controls.maxPolarAngle = Math.PI / 2;
 
     // Animation loop
     function animate() {
       requestAnimationFrame(animate);
+
+      controls.update(); // Only required if controls.enableDamping = true, or if controls.auto-rotation is enabled
+
+      // scene.rotation.y += cursorX * 0.05; // Rotate around the Y-axis
+      // scene.rotation.x += cursorY * 0.05; // Rotate around the X-axis
+
+      // Iterate over each object in the loadedObjects object
+      // Object.values(loadedObjects).forEach((object) => {
+      //   if (object) {
+      //     // Adjust the rotation of each object based on the cursor position
+      //     object.rotation.x += cursorY * 0.05; // Rotate around the x-axis
+      //     object.rotation.y += cursorX * 0.05; // Rotate around the y-axis
+
+      //     // Optional: Log the rotation to verify it is happening
+      //     // console.log(`Object rotation: x=${object.rotation.x.toFixed(2)}, y=${object.rotation.y.toFixed(2)}, z=${object.rotation.z.toFixed(2)}`);
+      //   }
+      // });
+
       renderer.render(scene, camera);
     }
     animate();
   </script>
 </body>
 </html>
-       
