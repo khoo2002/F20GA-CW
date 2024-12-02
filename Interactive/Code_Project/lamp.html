@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Load OBJ File</title>
+  <style>
+    body { margin: 0; }
+    canvas { display: block; }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js",
+        "three/examples/jsm/loaders/OBJLoader": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/loaders/OBJLoader.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <script type="module">
+    import * as THREE from 'three';
+    import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
+
+
+    // Scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Add lighting
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(10, 9, 10).normalize();
+    scene.add(light);
+
+    // Load .obj file
+    const loader = new OBJLoader();
+    loader.load(
+      'http://localhost:5500/meshes/final_model_in_one.obj', // Path to your OBJ file
+      (object) => {
+        object.position.set(0, 0, -60); // Position the object
+        // object.rotation.set(Math.PI / 4, Math.PI / 4, Math.PI / 4); // Rotate 45° on each axis
+        object.rotation.set(0, Math.PI / 2, 0); // Rotate 45° on each axis
+        scene.add(object);
+      },
+      (xhr) => {
+        console.log(`Loading: ${(xhr.loaded / xhr.total) * 100}% loaded`);
+      },
+      (error) => {
+        console.error('An error happened while loading the model', error);
+      }
+    );
+    
+
+    // Position the camera
+    camera.position.z = 0;
+    camera.position.y = 4;
+    // camera.position.x = 0;
+    
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>
+       
