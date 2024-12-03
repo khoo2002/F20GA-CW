@@ -5,10 +5,14 @@ Inside the Code_Project will have a lamp.html(main file) and meshes folder. Insi
 Code_Project/
 ├── lamp.html
 └── meshes/
-    ├── lamp.obj
-    ├── lamp.mtl
-    ├── shade.obj
-    └── shade.mtl
+    ├── lamp_body.obj
+    ├── lamp_body.mtl
+    ├── switch.obj
+    ├── switch.mtl
+    ├── pendants.obj
+    ├── pendants.mtl
+    ├── chains.obj
+    └── chains.mtl
 ```
 ## Video Demo
 This video introduces what we completed in Part 1 Importing and Drawing, and Part 2 Materials, Light and Shading.
