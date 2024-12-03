@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Load OBJ File</title>
   <style>
+    /* Basic CSS to remove margin and make the canvas full screen */
     body { margin: 0; }
     canvas { display: block; }
   </style>
@@ -21,70 +22,70 @@
 </head>
 <body>
   <script type="module">
+    // Import necessary modules from Three.js
     import * as THREE from 'three';
     import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
     import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
     import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-    // Scene setup
+    // Create the scene
     const scene = new THREE.Scene();
+
+    // Set up the camera with a field of view of 75 degrees and an aspect ratio based on the window size
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    // Create the WebGL renderer and attach it to the document body
     const renderer = new THREE.WebGLRenderer();
     document.body.appendChild(renderer.domElement);
 
-    camera.position.set(16, 2, -0.25); // Place camera at (5, 5, 5)
-    camera.lookAt(0, 0, 0);       // Point it toward the origin (0, 0, 0)
-    camera.rotation.set(0, 0, 0); // Set the camera's rotation to 0
+    // Position the camera and set its view to look at the center of the scene
+    camera.position.set(16, 3.5, -0.25);
+    camera.lookAt(0, 0, 0);
+    camera.rotation.set(0, 0, 0); // Set the camera's rotation to zero for a neutral view
 
+    // Set the size of the renderer to fill the window
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
+    // Initialize a variable to control the vertical offset of objects
     let moveZ = 4;
-    let showHelper = false;
+    let showHelper = false; // Toggle for showing helper objects in the scene
 
-    // scene.background = new THREE.Color( 0xe0e0e0 );
-    // scene.fog = new THREE.Fog( 0xe0e0e0, 20, 100 );
-    // lights
+    // Add ambient lighting to the scene for general illumination
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 1);
+    hemiLight.position.set(0, 20, 30);
+    scene.add(hemiLight);
 
-    const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x8d8d8d, 1 );
-    hemiLight.position.set( 0, 20, 30 );
-    scene.add( hemiLight );
+    // Add directional light to create shadows and highlight objects from a specific direction
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(0, 20, 10);
+    scene.add(dirLight);
 
-    const dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
-    dirLight.position.set( 0, 20, 10 );
-    scene.add( dirLight );
+    // Create a large ground plane to serve as the base of the scene
+    const mesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(2000, 2000),
+      new THREE.MeshPhongMaterial({ color: 0xcbcbcb, depthWrite: false })
+    );
+    mesh.rotation.x = -Math.PI / 2; // Rotate the plane so it's horizontal
+    scene.add(mesh);
 
-    // ground
-
-    const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000 ), new THREE.MeshPhongMaterial( { color: 0xcbcbcb, depthWrite: false } ) );
-    mesh.rotation.x = - Math.PI / 2;
-    scene.add( mesh );
-
-    const grid = new THREE.GridHelper( 200, 40, 0x000000, 0x000000 );
+    // Add a grid helper to create a visual reference for the ground plane
+    const grid = new THREE.GridHelper(200, 40, 0x000000, 0x000000);
     grid.material.opacity = 0.2;
-    grid.material.transparent = true;
-    scene.add( grid );
-    // // Add lighting
-    // const light = new THREE.DirectionalLight(0xffffff, 2);
-    // light.position.set(100, (100+moveZ), 100).normalize();
-    // scene.add(light);
+    grid.material.transparent = true; // Set the grid to be semi-transparent
+    scene.add(grid);
 
-
+    // Add a point light to simulate a bulb or small light source
     const bulbLight = new THREE.PointLight(0xFFFD37, 30, 0);
-    bulbLight.position.set(0, (2+moveZ), 0);
+    bulbLight.position.set(0, (2 + moveZ), 0);
     scene.add(bulbLight);
-    if(showHelper){
+    // Optionally add a helper for debugging the position and size of the point light
+    if (showHelper) {
       const helper = new THREE.PointLightHelper(bulbLight);
       scene.add(helper);
     }
 
-    // Array to store all loaded objects
-    let chainLeft;
-    let chainRight;
-    let lamp;
-    let pendant;
-    let _switch;
-
+    // Object to hold references to the loaded objects in the scene
     let loadedObjects = {
       chainLeft: null,
       chainRight: null,
@@ -92,142 +93,135 @@
       pendant: null,
       _switch: null
     };
-    let scale = 0.9;
 
-  // Assuming loadObject is a function that returns a Promise
-  function loadObject(objPath, mtlPath, initialPosition, scale, color) {
-    return new Promise((resolve, reject) => {
-      if(objPath === 'meshes/chain.obj'){
-          const material = new THREE.MeshPhysicalMaterial({  
+    let scale = 0.9; // Default scale for loading models
+
+    // Function to load 3D objects with materials and initial positioning
+    function loadObject(objPath, mtlPath, initialPosition, scale, color) {
+      return new Promise((resolve, reject) => {
+        // Special case handling for chain object
+        if (objPath === 'meshes/chain.obj') {
+          const material = new THREE.MeshPhysicalMaterial({
             metalness: 1.0,
             roughness: 0.4,
             ambientIntensity: 0.2,
             aoMapIntensity: 1.0,
             envMapIntensity: 1.0,
-            displacementScale: 2.436143, // from original model
+            displacementScale: 2.436143, // Custom scale for displacement maps
             normalScale: 1.0,
           });
           const objLoader = new OBJLoader();
-          // objLoader.setMaterials(material);
+          objLoader.load(objPath, (object) => {
+            // Set the position and scale of the loaded object
+            object.position.copy(initialPosition);
+            object.scale.set(scale, scale, scale);
+            // Optionally add a box helper for debugging
+            if (showHelper) {
+              const boxHelper = new THREE.BoxHelper(object, color);
+              scene.add(boxHelper);
+            }
+            // Traverse through each mesh in the object and apply the custom material
+            object.traverse((child) => {
+              if (child.isMesh) {
+                child.material = material;
+              }
+            });
+            scene.add(object); // Add the object to the scene
+            resolve(object); // Resolve the promise with the loaded object
+          }, undefined, reject);
+        } else if (objPath === 'meshes/pendant.obj') {
+          // Create a specialized material for the pendant object with unique properties
+          const material = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff,
+            transmission: 0.93, // Transparency effect for the pendant
+            opacity: 1,
+            metalness: 0,
+            roughness: 0,
+            ior: 4, // Index of refraction for realistic glass-like appearance
+            thickness: 1,
+            specularIntensity: 1,
+            specularColor: 0xffffff,
+            envMapIntensity: 1,
+            lightIntensity: 1,
+            exposure: 1
+          });
+          const objLoader = new OBJLoader();
           objLoader.load(objPath, (object) => {
             object.position.copy(initialPosition);
             object.scale.set(scale, scale, scale);
-            if(showHelper){
+            if (showHelper) {
               const boxHelper = new THREE.BoxHelper(object, color);
               scene.add(boxHelper);
             }
             object.traverse((child) => {
               if (child.isMesh) {
-                child.material = material;  // Apply custom material to each mesh in the object
+                child.material = material; // Apply the custom material to the pendant
               }
             });
-            // if (color) {
-            //   object.traverse((child) => {
-            //     if (child.isMesh) {
-            //       child.material.color.set(color);
-            //     }
-            //   });
-            // }
             scene.add(object);
             resolve(object);
           }, undefined, reject);
-      }else if(objPath === 'meshes/pendant.obj'){
-        const material = new THREE.MeshPhysicalMaterial({  
-          color: 0xffffff,
-          transmission: 0.93,
-          opacity: 1,
-          metalness: 0,
-          roughness: 0,
-          ior: 4,
-          thickness: 1,
-          specularIntensity: 1,
-          specularColor: 0xffffff,
-          envMapIntensity: 1,
-          lightIntensity: 1,
-          exposure: 1
-        });
-        const objLoader = new OBJLoader();
-        // objLoader.setMaterials(material);
-        objLoader.load(objPath, (object) => {
-          object.position.copy(initialPosition);
-          object.scale.set(scale, scale, scale);
-          if(showHelper){
-              const boxHelper = new THREE.BoxHelper(object, color);
-              scene.add(boxHelper);
-          }
-          object.traverse((child) => {
-            if (child.isMesh) {
-              child.material = material;  // Apply custom material to each mesh in the object
-            }
-          });
-          // if (color) {
-          //   object.traverse((child) => {
-          //     if (child.isMesh) {
-          //       child.material.color.set(color);
-          //     }
-          //   });
-          // }
-          scene.add(object);
-          resolve(object);
-        }, undefined, reject);
-      }else{
-        const mtlLoader = new MTLLoader();
-        mtlLoader.load(mtlPath, (materials) => {
-        materials.preload();
+        } else {
+          // General loading for other objects with MTL materials
+          const mtlLoader = new MTLLoader();
+          mtlLoader.load(mtlPath, (materials) => {
+            materials.preload(); // Preload materials for use
 
-          // Map the materials for better PBR setup
-          // Iterate through the materials object and apply changes
-        Object.values(materials.materials).forEach((material) => {
-          // Convert the material to MeshPhysicalMaterial for better realism
-          material.metalness = material.metallic || 0;  // Blender metallic maps to Three.js metalness
-          material.roughness = material.roughness || 0.5;  // Blender roughness maps to Three.js roughness
+            // Map and set up the materials for PBR (Physically-Based Rendering)
+            Object.values(materials.materials).forEach((material) => {
+              material.metalness = material.metallic || 0; // Set metallic properties
+              material.roughness = material.roughness || 0.5; // Set roughness properties
 
-          // If there are texture maps (e.g., diffuse, specular, normal maps), load them
-          if (material.map) {
-            material.map = new THREE.TextureLoader().load(material.map);
-          }
-          if (material.normalMap) {
-            material.normalMap = new THREE.TextureLoader().load(material.normalMap);
-          }
-          if (material.roughnessMap) {
-            material.roughnessMap = new THREE.TextureLoader().load(material.roughnessMap);
-          }
-          if (material.metalnessMap) {
-            material.metalnessMap = new THREE.TextureLoader().load(material.metalnessMap);
-          }
-
-          // Set up the material to be more realistic
-          material.envMap = scene.background; // Use the scene's background as an environment map
-          material.envMapIntensity = 1;  // Adjust the reflection intensity
-          material.needsUpdate = true;  // Force Three.js to reapply material changes
-        });
-
-        const objLoader = new OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.load(objPath, (object) => {
-          object.position.copy(initialPosition);
-          object.scale.set(scale, scale, scale);
-          if(showHelper){
-              const boxHelper = new THREE.BoxHelper(object, color);
-              scene.add(boxHelper);
-          }
-          let k = 1;
-          if (color && objPath === 'meshes/lamp.obj') {
-            object.traverse((child) => {
-
-              if (child.isMesh && k == 1) {
-                child.material.color.set("#DBA067");
-                k++;
+              // Load texture maps if they exist
+              if (material.map) {
+                material.map = new THREE.TextureLoader().load(material.map);
               }
+              if (material.normalMap) {
+                material.normalMap = new THREE.TextureLoader().load(material.normalMap);
+              }
+              if (material.roughnessMap) {
+                material.roughnessMap = new THREE.TextureLoader().load(material.roughnessMap);
+              }
+              if (material.metalnessMap) {
+                material.metalnessMap = new THREE.TextureLoader().load(material.metalnessMap);
+              }
+
+              // Apply environment map for reflections
+              material.envMap = scene.background;
+              material.envMapIntensity = 1;
+              material.needsUpdate = true;
             });
-          }
-          scene.add(object);
-          resolve(object);
-        }, undefined, reject);
-      }, undefined, reject);
-    }});
-  
-  }
+
+            // Load the object and apply materials
+            const objLoader = new OBJLoader();
+            objLoader.setMaterials(materials);
+            objLoader.load(objPath, (object) => {
+              object.position.copy(initialPosition);
+              object.scale.set(scale, scale, scale);
+              if (showHelper) {
+                const boxHelper = new THREE.BoxHelper(object, color);
+                scene.add(boxHelper);
+              }
+              // If specific color is required for the lamp, apply it here
+              let k = 1;
+              if (color && objPath === 'meshes/lamp.obj') {
+                object.traverse((child) => {
+                  if (child.isMesh) {
+                    child.material.color.setHex(color);
+                    child.material.needsUpdate = true;
+                    if (child.material.emissive) {
+                      child.material.emissive.setHex(0xDBA067); // Set emissive color for glow
+                    }
+                  }
+                });
+              }
+              scene.add(object);
+              resolve(object);
+            }, undefined, reject);
+          });
+        }
+      });
+    }
     // Load objects and assign them to the loadedObjects object
     loadObject('meshes/lamp.obj', 'meshes/lamp.mtl',
      new THREE.Vector3(0*scale, (2.8*scale)+moveZ, 0*scale), scale, 0xff0000)
