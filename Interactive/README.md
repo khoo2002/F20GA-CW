@@ -39,6 +39,7 @@ Step 4: Assembling the Model To assemble the lamp, I added a BoxHelper around ea
 ## Part 2 Materials, Light and Shading.
 
 ![image](https://github.com/user-attachments/assets/3e1a0e6b-b770-4707-8eb4-9351424e4ffa)
+![image](https://github.com/user-attachments/assets/1040c665-358f-4fe5-8c10-43a33baa8045)
 
 Step 5: Setting Up Materials Now, while I exported materials correctly from Blender, I ran into an issue: Three.js doesn’t support some of the advanced material features. To solve this, I used MeshPhysicalMaterial, which is a versatile material type in Three.js, capable of simulating realistic properties like metalness and roughness. I created custom materials for the metal parts of the lamp and the diamond-like pendants. I also made sure to apply the correct colors, especially for the lamp cover, to replicate the design in the original model.
 
