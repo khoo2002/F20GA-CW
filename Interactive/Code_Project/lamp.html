@@ -256,37 +256,19 @@
       
     });
     
-    // Add OrbitControls for camera interaction
+    // Add orbit controls to allow user interaction with the scene
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
+    controls.enableDamping = true; // Smooth camera movements
     controls.dampingFactor = 0.25;
-    controls.screenSpacePanning = false;
-    controls.maxPolarAngle = Math.PI / 2;
 
-    // Animation loop
+    // Animation loop to render the scene
     function animate() {
       requestAnimationFrame(animate);
-
-      controls.update(); // Only required if controls.enableDamping = true, or if controls.auto-rotation is enabled
-
-      // scene.rotation.y += cursorX * 0.05; // Rotate around the Y-axis
-      // scene.rotation.x += cursorY * 0.05; // Rotate around the X-axis
-
-      // Iterate over each object in the loadedObjects object
-      // Object.values(loadedObjects).forEach((object) => {
-      //   if (object) {
-      //     // Adjust the rotation of each object based on the cursor position
-      //     object.rotation.x += cursorY * 0.05; // Rotate around the x-axis
-      //     object.rotation.y += cursorX * 0.05; // Rotate around the y-axis
-
-      //     // Optional: Log the rotation to verify it is happening
-      //     // console.log(`Object rotation: x=${object.rotation.x.toFixed(2)}, y=${object.rotation.y.toFixed(2)}, z=${object.rotation.z.toFixed(2)}`);
-      //   }
-      // });
-      console.log("Camera at: ", camera.position);
-      renderer.render(scene, camera);
+      controls.update(); // Update the controls for smooth user interaction
+      renderer.render(scene, camera); // Render the scene from the perspective of the camera
     }
-    animate();
+    animate(); // Start the animation loop
+
   </script>
 </body>
 </html>
