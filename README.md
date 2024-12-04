@@ -18,9 +18,15 @@ Two main animations are incorporated:
 2. Swing Movement – Initiating a swing motion from the top chain to create a gentle swaying effect.
 
 # Interactive Features
-The model import using WebGPU library which are 
+The process of importing and rendering the lamp model utilized two key WebGPU-based libraries:
 1. WebGPU
 2. Three.js
+
+The process began with preparing the lamp model to ensure efficient rendering in a browser environment. Using Blender, the lamp's geometry was optimized by applying the Decimate Modifier, which reduced the total vertex count to 9601. This significantly improved performance by lowering computational demands. The model was then divided into four components—chains, lamp body, switch, and pendants—and exported as individual .obj files. During export, special care was taken to preserve material properties, UV mappings, and essential parameters to retain the visual fidelity of the original design.
+
+Once the files were ready, a Three.js script was used to create a scene leveraging the WebGPU renderer for improved performance and realism. The setup included a ground plane and a strategically placed camera for an optimal view of the assembled lamp. Each component of the lamp was imported and aligned using BoxHelper, which visualized the boundaries and helped in precise adjustments to position, scale, and rotation. This meticulous alignment ensured that the lamp was reassembled seamlessly, resulting in a unified and visually accurate model in the scene.
+
+To achieve a realistic appearance, materials were recreated in Three.js using MeshPhysicalMaterial, which supports advanced properties like metalness and roughness. Custom materials were crafted for the metallic sections of the lamp and its diamond-like pendants, with particular attention to replicating the lamp cover’s original design. Lighting played a key role in highlighting the model, combining a HemisphereLight for ambient illumination and a DirectionalLight for dramatic shadows. Finally, OrbitControls were integrated, enabling smooth camera navigation for users to pan, zoom, and rotate, providing an interactive way to explore the model's details from all angles.
 
 The model includes the following interactive features:
 
