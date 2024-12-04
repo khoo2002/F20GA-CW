@@ -55,7 +55,9 @@ Step 6: Adding Lighting and Controls Lighting is vital for showcasing the modelâ
 
 ### 1. **Camera Circular Motion with Button Toggle**
    - **Functionality**: The camera moves in a circular motion around the lamp and always looks at it.
-    https://github.com/user-attachments/assets/4341e8df-c6d2-48dd-b4bc-574183e5b237
+
+https://github.com/user-attachments/assets/4341e8df-c6d2-48dd-b4bc-574183e5b237
+
    - **Implementation**: 
      - The camera rotates around a defined center (main object) at a set radius using button toggles.
      - **Code Snippet**:
@@ -70,20 +72,26 @@ Step 6: Adding Lighting and Controls Lighting is vital for showcasing the modelâ
 
 ### 2. **Zoom In/Out by Mouse Wheel**
    - **Functionality**: Zooms the camera in and out based on the mouse wheel.
-     https://github.com/user-attachments/assets/878ea0fb-83e0-46b2-9210-994f0f9ff02f
+
+https://github.com/user-attachments/assets/878ea0fb-83e0-46b2-9210-994f0f9ff02f
+
    - **Implementation**: 
      - Handled by `OrbitControls`, which manages mouse input for zooming and camera orientation adjustments.
 
 ### 3. **Drag to Rotate Around the Lamp**
    - **Functionality**: Allows the user to drag the camera around the lamp.
-     https://github.com/user-attachments/assets/428b20b7-eda0-452b-9cb9-661e09982d54
+
+https://github.com/user-attachments/assets/428b20b7-eda0-452b-9cb9-661e09982d54
+
    - **Implementation**: 
      - **OrbitControls** allows the camera to be rotated around the center of the scene.
      - Mouse drag event is processed by `OrbitControls` for camera rotation.
 
 ### 4. **WASD Keyboard Movement**
    - **Functionality**: Allows the user to move the camera using the WASD keys.
-     https://github.com/user-attachments/assets/19bfd347-63f3-4691-96fb-8919430bf196
+
+https://github.com/user-attachments/assets/19bfd347-63f3-4691-96fb-8919430bf196
+
    - **Implementation**: 
      - `FlyControls` handles the movement when WASD or arrow keys are pressed.
      - FlyControls are activated/deactivated based on keyboard input.
@@ -98,7 +106,9 @@ Step 6: Adding Lighting and Controls Lighting is vital for showcasing the modelâ
 
 ### 5. **Button to Control the Light On/Off**
    - **Functionality**: Toggles the light on/off with a button.
-     https://github.com/user-attachments/assets/c81c8789-8ab1-476d-809a-9d3dbcabdc31
+
+https://github.com/user-attachments/assets/c81c8789-8ab1-476d-809a-9d3dbcabdc31
+
    - **Implementation**: 
      - A button toggles the light's intensity and updates the text to reflect the current state of the light.
      - **Code Snippet**:
@@ -129,7 +139,9 @@ Step 6: Adding Lighting and Controls Lighting is vital for showcasing the modelâ
 
 ### 7. **Interact with Light Switch**
    - **Functionality**: Clicking the light switch toggles the light and animates the pulling of the switch.
-     https://github.com/user-attachments/assets/667cda63-f7a0-4f2a-83a6-f4d20e3f3ebc
+
+https://github.com/user-attachments/assets/667cda63-f7a0-4f2a-83a6-f4d20e3f3ebc
+
    - **Implementation**: 
      - A click on the switch triggers a toggle for the light and animates the switch being pulled.
      - **Code Snippet**:
