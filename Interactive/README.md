@@ -1,4 +1,10 @@
 # F20GA-CW
+## Tools we used
+1. Blender
+2. WebGPU
+3. Three.js
+4. Javascript
+
 ## Files structure
 Inside the Code_Project will have a lamp.html(main file) and meshes folder. Inside the meshes folder is all the .obj(mesh) and .mtl(materials) components files.
 ```
