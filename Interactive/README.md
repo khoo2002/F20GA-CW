@@ -19,6 +19,9 @@ This video introduces what we completed in Part 1 Importing and Drawing, and Par
 
 https://github.com/user-attachments/assets/b5521c81-b7d2-48d1-be73-4b7ca0fb692d
 
+If the video is not working, visit the microsoft stream link to view:
+<a href="https://heriotwatt-my.sharepoint.com/:v:/g/personal/zk2022_hw_ac_uk/EevWhTyJmfJCqNiM796nc20B3iv1sr7PC8Co_DCLLtjMig?e=nrGDbW&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D">https://heriotwatt-my.sharepoint.com/:v:/g/personal/zk2022_hw_ac_uk/EevWhTyJmfJCqNiM796nc20B3iv1sr7PC8Co_DCLLtjMig?e=nrGDbW&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D</a>
+
 ## Part 1 Importing and Drawing
 Step 1: Splitting and Optimizing the Model To ensure the imported model was efficient and performed well, I imported the lamp into Blender and used the Decimate Modifier to reduce the number of vertices on each part. Now the total is only 9601 vertices. This step optimized the model and reduced the load on the browser during rendering, which is crucial for performance.
 
