@@ -59,6 +59,11 @@ Step 6: Adding Lighting and Controls Lighting is vital for showcasing the modelâ
 
 ## Part 3 Interactive Features
 
+
+The buttons that made mistake when recording screen:
+![image](https://github.com/user-attachments/assets/c47649c6-da58-4eac-86ff-b1eaa907a602)
+
+
 ### 1. **Camera Circular Motion with Button Toggle**
    - **Functionality**: The camera moves in a circular motion around the lamp and always looks at it.
 
