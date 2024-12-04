@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Load OBJ File</title>
   <style>
     /* Basic CSS to remove margin and make the canvas full screen */
-    body { margin: 0; }
-    canvas { display: block; }
+    body {
+      margin: 0;
+    }
+
+    canvas {
+      display: block;
+    }
   </style>
   <script type="importmap">
     {
@@ -15,18 +21,26 @@
         "three": "https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js",
         "three/examples/jsm/loaders/OBJLoader": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/loaders/OBJLoader.js",
         "three/examples/jsm/loaders/MTLLoader": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/loaders/MTLLoader.js",
-        "three/examples/jsm/controls/OrbitControls": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/controls/OrbitControls.js"
+        "three/examples/jsm/controls/OrbitControls": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/controls/OrbitControls.js",
+        "three/examples/jsm/controls/FlyControls": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/controls/FlyControls.js",
+        "tween": "https://cdnjs.cloudflare.com/ajax/libs/tween.js/25.0.0/tween.umd.js"
       }
     }
   </script>
 </head>
+
 <body>
+  <!-- <div id="info">
+    <b>WASD</b> move, <b>R|F</b> up | down, <b>Q|E</b> roll, <b>up|down</b> pitch, <b>left|right</b> yaw
+  </div> -->
   <script type="module">
     // Import necessary modules from Three.js
     import * as THREE from 'three';
     import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
     import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
     import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+    import { FlyControls } from 'three/examples/jsm/controls/FlyControls';
+
 
     // Create the scene
     const scene = new THREE.Scene();
@@ -79,6 +93,7 @@
     const bulbLight = new THREE.PointLight(0xFFFD37, 30, 0);
     bulbLight.position.set(0, (2 + moveZ), 0);
     scene.add(bulbLight);
+
     // Optionally add a helper for debugging the position and size of the point light
     if (showHelper) {
       const helper = new THREE.PointLightHelper(bulbLight);
@@ -224,26 +239,31 @@
     }
     // Load objects and assign them to the loadedObjects object
     loadObject('meshes/lamp.obj', 'meshes/lamp.mtl',
-     new THREE.Vector3(0*scale, (2.8*scale)+moveZ, 0*scale), scale, 0xff0000)
+      new THREE.Vector3(0 * scale, (2.8 * scale) + moveZ, 0 * scale), scale, 0xff0000)
       .then(object => loadedObjects.lamp = object);
 
     //left chain
     loadObject('meshes/chain.obj', 'meshes/chain.mtl',
-     new THREE.Vector3(0*scale, (7.78*scale)+moveZ, 1.25*scale), scale, 0x00ff00)
+      new THREE.Vector3(0 * scale, (7.78 * scale) + moveZ, 1.25 * scale), scale, 0x00ff00)
       .then(object => loadedObjects.chainRight = object);
 
     //right chain
     loadObject('meshes/chain.obj', 'meshes/chain.mtl',
-     new THREE.Vector3(0*scale, (7.78*scale)+moveZ, -1.2*scale), scale, 0x0000ff)
+      new THREE.Vector3(0 * scale, (7.78 * scale) + moveZ, -1.2 * scale), scale, 0x0000ff)
       .then(object => loadedObjects.chainLeft = object);
 
     loadObject('meshes/pendant.obj', 'meshes/pendant.mtl',
-     new THREE.Vector3(0*scale, (0*scale)+moveZ, 0*scale), scale, 0xffff00)
+      new THREE.Vector3(0 * scale, (0 * scale) + moveZ, 0 * scale), scale, 0xffff00)
       .then(object => loadedObjects.pendant = object);
 
     loadObject('meshes/switch.obj', 'meshes/switch.mtl',
-     new THREE.Vector3(0*scale, (1*scale)+moveZ, -1.0*scale), scale, 0xff00ff)
-      .then(object => loadedObjects._switch = object);
+      new THREE.Vector3(0 * scale, (1 * scale) + moveZ, -1.0 * scale), scale, 0xff00ff)
+      .then(object => {
+        loadedObjects._switch = object;
+        console.log("Switch loaded: ", object); // Add this to confirm the switch is loaded
+      });
+
+    let mainObjectPosition = new THREE.Vector3(0, 2.8 * scale + moveZ, 0); // Center of the main object
 
     // Track the cursor position
     let cursorX = 0;
@@ -253,22 +273,332 @@
       // Normalize cursor position to range [-1, 1] for both X and Y
       cursorX = (event.clientX / window.innerWidth) * 2 - 1;
       cursorY = -(event.clientY / window.innerHeight) * 2 + 1;
-      
+
     });
-    
+
     // Add orbit controls to allow user interaction with the scene
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true; // Smooth camera movements
-    controls.dampingFactor = 0.25;
+    const controls1 = new OrbitControls(camera, renderer.domElement);
+    controls1.enableDamping = true; // Smooth camera movements
+    controls1.dampingFactor = 0.25;
+    controls1.enablePan = false;
+
+    // Add fly controls for a different perspective
+    const controls2 = new FlyControls(camera, renderer.domElement);
+    controls2.movementSpeed = 100;
+    controls2.rollSpeed = 0.001;
+    controls2.autoForward = false;
+    controls2.dragToLook = false;
+    controls2.mouseDragOn = false;
+
+    const clock = new THREE.Clock(); // For delta time calculations
+    let isFlyControlActive = false;
+
+    // Disable FlyControls' mouse interactions to avoid conflicts
+    window.addEventListener('keydown', (event) => {
+      // Use FlyControls only for WASD and arrow keys
+      if (
+        ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code)
+      ) {
+        isFlyControlActive = !isFlyControlActive;
+      }
+    });
+
+    // Variables to track the camera motion state
+    let cameraMotionEnabled = true;
+    let targetAngle = 0; // The angle at which the camera will rotate around the current position
+    let center = mainObjectPosition; // Default center is current camera position
+    let radius = camera.position.distanceTo(center); // Distance from camera to center of rotation
+    let speed = 0.5; // Speed of the camera's circular motion
+
+    // Add a button to toggle camera motion
+    function createToggleButton() {
+      const buttonId = "camera-motion-toggle";
+      if (!document.getElementById(buttonId)) {
+        const button = document.createElement("button");
+        button.id = buttonId;
+        button.innerText = "Camera Motion";
+        // Style the button
+        button.style.position = "absolute";
+        button.style.top = "70px"; // Position below the light toggle button
+        button.style.right = "20px";
+        button.style.padding = "10px 20px";
+        button.style.zIndex = "1000"; // Ensure it stays on top
+        button.style.backgroundColor = "#444";
+        button.style.color = "white";
+        button.style.border = "none";
+        button.style.borderRadius = "5px";
+        button.style.cursor = "pointer";
+
+        // Add hover effect
+        button.addEventListener("mouseenter", () => button.style.backgroundColor = "#666");
+        button.addEventListener("mouseleave", () => button.style.backgroundColor = "#444");
+
+        document.body.appendChild(button);
+
+        button.addEventListener("click", () => {
+          cameraMotionEnabled = !cameraMotionEnabled;
+          targetAngle = Math.atan2(camera.position.z, camera.position.y, camera.position.x); // Reset target angle to current position
+          center = mainObjectPosition; // Reset the center to the main object
+          radius = camera.position.distanceTo(center); // Recalculate the distance from the center
+        });
+      }
+    }
+
+    // Function to handle dynamic camera motion around the main object
+    function updateCameraMotion(time) {
+      if (!cameraMotionEnabled) return;
+
+      // Get the main object's position (assuming it's at the origin or adjust as needed)
+      const centerX = 0;
+      const centerZ = 0;
+
+      // Get current camera position as baseline
+      const currentPosition = camera.position.clone();
+
+      // Calculate offsets for circular motion relative to the main object
+      const offsetX = radius * Math.cos(speed * time);
+      const offsetZ = radius * Math.sin(speed * time);
+
+      // Update camera position dynamically, maintaining its current height (Y)
+      camera.position.x = centerX + offsetX;
+      camera.position.z = centerZ + offsetZ;
+
+      // Ensure the camera looks at the main object
+      camera.lookAt(centerX, currentPosition.y, centerZ);
+    }
+
+    // light on/off animation
+    let lb = null;
+    function createLightToggleButton() {
+      const buttonId = "light-toggle";
+
+      // Check if the button already exists
+      if (!document.getElementById(buttonId)) {
+        const button = document.createElement("button");
+        button.id = buttonId;
+        button.innerText = "Turn Off Light";
+
+        // Style the button
+        button.style.position = "absolute";
+        button.style.top = "20px"; // Position at the top
+        button.style.right = "20px";
+        button.style.padding = "10px 25px";
+        button.style.zIndex = "1000"; // Ensure it stays on top
+        button.style.backgroundColor = "#444";
+        button.style.color = "white";
+        button.style.border = "none";
+        button.style.borderRadius = "5px";
+        button.style.cursor = "pointer";
+
+        lb = button;
+
+        // Add hover effect
+        button.addEventListener("mouseenter", () => button.style.backgroundColor = "#666");
+        button.addEventListener("mouseleave", () => button.style.backgroundColor = "#444");
+
+        // Append the button to the document body
+        document.body.appendChild(button);
+
+        // Add functionality to toggle light
+        button.addEventListener("click", () => {
+          toggleLight(); // Toggle the light on/off
+          animatePullSwitch(loadedObjects._switch); // Pull the switch down when toggling the light
+          // Optionally update button text
+          button.innerText = isLightOn ? "Turn Off Light" : "Turn On Light";
+        });
+      }
+    }
+
+    // Variables for light and switch position
+    let isLightOn = true;
+    let isSwitchPulled = false;
+    let switchInitialPosition = new THREE.Vector3(0, (1 * scale) + moveZ, -1.0 * scale);
+    let switchPulledPosition = new THREE.Vector3(0, (0.8 * scale) + moveZ, -1.0 * scale);
+
+
+    // Add event listeners for mouse interaction
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    let intersects = [];
+
+    // Add the hover effect (highlight border) for the switch
+    function onMouseMove(event) {
+      // Normalize the mouse coordinates for raycasting
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      // Update the raycaster with the mouse position
+      raycaster.setFromCamera(mouse, camera);
+
+      // Check for intersections with all the meshes inside the switch group
+      let intersects = [];
+      loadedObjects._switch.children.forEach(child => {
+        intersects = intersects.concat(raycaster.intersectObject(child)); // Collect intersections
+      });
+
+      if (intersects.length > 0) {
+        highlightSwitch(true); // Highlight switch if it's hovered
+      } else {
+        highlightSwitch(false); // Remove highlight if not hovered
+      }
+    }
+
+
+    // Function to highlight the switch on hover
+    function highlightSwitch(isHovered) {
+      const switchMeshes = loadedObjects._switch.children; // Get all meshes in the switch group
+
+      switchMeshes.forEach(mesh => {
+        if (mesh.material && mesh.material.emissive !== undefined) { // Ensure material and emissive exist
+          if (isHovered) {
+            mesh.material.emissive.setHex(0xAAAA00); // Set the emissive color when hovered
+          } else {
+            mesh.material.emissive.setHex(0x000000); // Reset the emissive color
+          }
+        }
+      });
+    }
+
+    // Add a click listener to toggle light and animate switch
+    function onClick(event) {
+      // Normalize the mouse coordinates for raycasting
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      // Update the raycaster with the mouse position
+      raycaster.setFromCamera(mouse, camera);
+
+      // Check for intersections with the switch group
+      const clickedObjects = [];
+      loadedObjects._switch.children.forEach(child => {
+        clickedObjects.push(...raycaster.intersectObject(child));
+      });
+
+      if (clickedObjects.length > 0) {
+        // Toggle light and animate the switch
+        toggleLight(); // Toggle the light on/off
+        animatePullSwitch(loadedObjects._switch); // Pull the switch down
+        lb.innerText = isLightOn ? "Turn Off Light" : "Turn On Light";
+      }
+    }
+
+    // Add mousemove and click listeners
+    window.addEventListener('mousemove', onMouseMove, false);
+    window.addEventListener('click', onClick, false);
+
+    // Function to pull the switch down
+    function animatePullSwitch(switchObject) {
+      if (!switchObject) return; // Ensure the switch object is valid
+
+      const originalScale = switchObject.scale.clone();
+      const originalPosition = switchObject.position.clone();
+
+      // Target scale and position
+      const targetScale = new THREE.Vector3(originalScale.x, originalScale.y * 1.3, originalScale.z);
+      const targetPosition = originalPosition.clone().add(new THREE.Vector3(0, 0.2, 0)); // Move slightly down
+
+      const duration = 0.01; // Animation duration in seconds
+      let elapsedTime = 0;
+
+      function animateSwitch(timestamp) {
+        const delta = clock.getDelta(); // Calculate the time step
+        elapsedTime += delta;
+
+        if (elapsedTime <= duration) {
+          // Move down and scale during the first half
+          const progress = elapsedTime / duration;
+          switchObject.scale.lerpVectors(originalScale, targetScale, progress);
+          switchObject.position.lerpVectors(originalPosition, targetPosition, progress);
+          requestAnimationFrame(animateSwitch); // Continue the animation
+        } else if (elapsedTime <= duration * 2) {
+          // Move back to the original state
+          const bounceTime = (elapsedTime - duration) / duration;
+          switchObject.scale.lerpVectors(targetScale, originalScale, bounceTime);
+          switchObject.position.lerpVectors(targetPosition, originalPosition, bounceTime);
+          requestAnimationFrame(animateSwitch); // Continue the animation
+        } else {
+          // Reset to original state and stop animation
+          switchObject.scale.copy(originalScale);
+          switchObject.position.copy(originalPosition);
+        }
+
+        // Render the scene on every frame
+        renderer.render(scene, camera);
+      }
+      // Start the animation
+      requestAnimationFrame(animateSwitch);
+    }
+    // Function to toggle the light on/off
+    function toggleLight() {
+      isLightOn = !isLightOn;
+      if (isLightOn) {
+        bulbLight.power = 100; // Turn on the light
+      } else {
+        bulbLight.power = 0; // Turn off the light
+      }
+    }
+
+    // swing animation
+    // Variables for swing animation
+    let swingAngle = 0;
+    const swingAmplitude = Math.PI / 8;  // Max angle for the swing (45 degrees)
+    const swingSpeed = 1;  // Speed of the swing
+
+    // Create groups to hold the chains and objects
+    const chainGroupRight = new THREE.Group();
+    const chainGroupLeft = new THREE.Group();
+    const objectGroup = new THREE.Group();  // To hold the lamp, pendant, switch, etc.
+
+    // Add objects to the respective groups
+    chainGroupRight.add(loadedObjects.chainRight);
+
+    chainGroupLeft.add(loadedObjects.chainLeft);
+
+    objectGroup.add(loadedObjects.lamp);
+    objectGroup.add(loadedObjects.pendant);
+    objectGroup.add(loadedObjects._switch);
+
+    // Swing animation function
+    function animateSwing(delta) {
+      // Calculate the swing angle based on a sine wave to make it swing back and forth
+      swingAngle += swingSpeed * delta;
+      const swingOffset = Math.sin(swingAngle) * swingAmplitude;
+
+      // Apply the swing offset to both chains using rotation around the top of the chain (pivot point)
+      chainGroupRight.rotation.x = swingOffset;
+      chainGroupLeft.rotation.x = swingOffset;
+
+    }
+
+
+
 
     // Animation loop to render the scene
     function animate() {
       requestAnimationFrame(animate);
-      controls.update(); // Update the controls for smooth user interaction
+      const time = Date.now() * 0.001;
+      createToggleButton();
+      createLightToggleButton();
+      const delta = clock.getDelta(); // Time between frames
+
+      if (isFlyControlActive) {
+        controls2.update(delta);
+      } else {
+        controls1.update();
+      }
+      if (cameraMotionEnabled) {
+        updateCameraMotion(time);
+      }
+
+      animateSwing(delta); // Animate the swing motion
+
       renderer.render(scene, camera); // Render the scene from the perspective of the camera
     }
+
+
     animate(); // Start the animation loop
 
   </script>
 </body>
+
 </html>
