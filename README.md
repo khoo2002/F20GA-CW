@@ -18,6 +18,9 @@ Two main animations are incorporated:
 2. Swing Movement – Initiating a swing motion from the top chain to create a gentle swaying effect.
 
 # Interactive Features
+The model import using WebGPU library which are 
+1. WebGPU
+2. Three.js
 
 The model includes the following interactive features:
 
