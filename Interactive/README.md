@@ -58,6 +58,12 @@ Step 5: Setting Up Materials Now, while I exported materials correctly from Blen
 Step 6: Adding Lighting and Controls Lighting is vital for showcasing the model’s details, so I included a HemisphereLight for ambient illumination and a DirectionalLight for casting shadows and highlighting the model’s form. This setup allows the lamp to be seen in both lit and unlit conditions. To make navigation easier and more interactive, I incorporated OrbitControls, enabling us to pan, zoom, and rotate the camera to view the lamp from different angles.
 
 ## Part 3 Interactive Features
+This video introduces what we completed in Part 3 interactives.
+
+https://github.com/user-attachments/assets/f901be4c-7d4b-4f23-aa79-0ec6130596ef
+
+If the video is not working, visit the microsoft stream link to view:
+<a href="https://heriotwatt-my.sharepoint.com/:v:/g/personal/zk2022_hw_ac_uk/EevWhTyJmfJCqNiM796nc20B3iv1sr7PC8Co_DCLLtjMig?e=nrGDbW&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D](https://heriotwatt-my.sharepoint.com/:v:/g/personal/jl2122_hw_ac_uk/ERMceCBlXkZIvjDPup7QodUB8c5kJRkHeoevonyW9vYMew?e=lCP0bV">https://heriotwatt-my.sharepoint.com/:v:/g/personal/zk2022_hw_ac_uk/EevWhTyJmfJCqNiM796nc20B3iv1sr7PC8Co_DCLLtjMig?e=nrGDbW&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D](https://heriotwatt-my.sharepoint.com/:v:/g/personal/jl2122_hw_ac_uk/ERMceCBlXkZIvjDPup7QodUB8c5kJRkHeoevonyW9vYMew?e=lCP0bV</a>
 
 
 The buttons that made mistake when recording screen:
