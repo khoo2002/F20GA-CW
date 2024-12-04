@@ -51,5 +51,87 @@ Step 5: Setting Up Materials Now, while I exported materials correctly from Blen
 
 Step 6: Adding Lighting and Controls Lighting is vital for showcasing the model’s details, so I included a HemisphereLight for ambient illumination and a DirectionalLight for casting shadows and highlighting the model’s form. This setup allows the lamp to be seen in both lit and unlit conditions. To make navigation easier and more interactive, I incorporated OrbitControls, enabling us to pan, zoom, and rotate the camera to view the lamp from different angles.
 
-## Part 3
+## Part 3 Interactive Features
 
+### 1. **Camera Circular Motion with Button Toggle**
+   - **Functionality**: The camera moves in a circular motion around the lamp and always looks at it.
+   - **Implementation**: 
+     - The camera rotates around a defined center (main object) at a set radius using button toggles.
+     - **Code Snippet**:
+       ```javascript
+       button.addEventListener("click", () => {
+         cameraMotionEnabled = !cameraMotionEnabled;
+         targetAngle = Math.atan2(camera.position.z, camera.position.y, camera.position.x);
+         center = mainObjectPosition;
+         radius = camera.position.distanceTo(center);
+       });
+       ```
+
+### 2. **Zoom In/Out by Mouse Wheel**
+   - **Functionality**: Zooms the camera in and out based on the mouse wheel.
+   - **Implementation**: 
+     - Handled by `OrbitControls`, which manages mouse input for zooming and camera orientation adjustments.
+
+### 3. **Drag to Rotate Around the Lamp**
+   - **Functionality**: Allows the user to drag the camera around the lamp.
+   - **Implementation**: 
+     - **OrbitControls** allows the camera to be rotated around the center of the scene.
+     - Mouse drag event is processed by `OrbitControls` for camera rotation.
+
+### 4. **WASD Keyboard Movement**
+   - **Functionality**: Allows the user to move the camera using the WASD keys.
+   - **Implementation**: 
+     - `FlyControls` handles the movement when WASD or arrow keys are pressed.
+     - FlyControls are activated/deactivated based on keyboard input.
+     - **Code Snippet**:
+       ```javascript
+       window.addEventListener('keydown', (event) => {
+         if (['KeyW', 'KeyA', 'KeyS', 'KeyD'].includes(event.code)) {
+           isFlyControlActive = !isFlyControlActive;
+         }
+       });
+       ```
+
+### 5. **Button to Control the Light On/Off**
+   - **Functionality**: Toggles the light on/off with a button.
+   - **Implementation**: 
+     - A button toggles the light's intensity and updates the text to reflect the current state of the light.
+     - **Code Snippet**:
+       ```javascript
+       button.addEventListener("click", () => {
+         toggleLight();
+         animatePullSwitch(loadedObjects._switch);
+         button.innerText = isLightOn ? "Turn Off Light" : "Turn On Light";
+       });
+       ```
+
+### 6. **Hover Effect on Light Switch with Tooltip**
+   - **Functionality**: The light switch highlights when the mouse pointer hovers over it.
+   - **Implementation**: 
+     - Raycasting detects when the mouse is over the light switch and applies a highlight effect.
+     - **Code Snippet**:
+       ```javascript
+       window.addEventListener('mousemove', onMouseMove, false);
+       function onMouseMove(event) {
+         raycaster.setFromCamera(mouse, camera);
+         let intersects = [];
+         loadedObjects._switch.children.forEach(child => {
+           intersects = intersects.concat(raycaster.intersectObject(child));
+         });
+         highlightSwitch(intersects.length > 0);
+       }
+       ```
+
+### 7. **Interact with Light Switch**
+   - **Functionality**: Clicking the light switch toggles the light and animates the pulling of the switch.
+   - **Implementation**: 
+     - A click on the switch triggers a toggle for the light and animates the switch being pulled.
+     - **Code Snippet**:
+       ```javascript
+       window.addEventListener('click', (event) => {
+         if (clickedObjects.length > 0) {
+           toggleLight();
+           animatePullSwitch(loadedObjects._switch);
+         }
+       });
+       ```
