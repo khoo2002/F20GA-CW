@@ -18,6 +18,27 @@ Two main animations are incorporated:
 2. Swing Movement – Initiating a swing motion from the top chain to create a gentle swaying effect.
 
 # Interactive Features
-The model includes two primary interactions:
-1. Light Switch Control – Dragging the light switch with the mouse will toggle the light on or off.
-2. Lamp Swing – Clicking on one side of the lamp cover will make the lamp swing in that direction.
+
+The model includes the following interactive features:
+
+1. **Camera Circular Motion with Button Toggle**  
+   The camera moves in a circular motion around the lamp and always looks at it. This motion can be toggled on/off using a button.
+
+2. **Zoom In/Out by Mouse Wheel**  
+   Zoom the camera in and out using the mouse wheel, allowing the user to get a closer or farther view of the lamp.
+
+3. **Drag to Rotate Around the Lamp**  
+   The camera can be dragged to rotate around the lamp, allowing users to explore the model from different angles.
+
+4. **WASD Keyboard Movement**  
+   Use the WASD keys to move the camera forward, backward, left, or right in the 3D space.
+
+5. **Button to Control Light On/Off**  
+   A button allows users to toggle the light on and off. The button text updates to reflect the current light status.
+
+6. **Hover Effect on Light Switch**  
+   When the pointer hovers over the light switch, a visual cue is provided to indicate that the switch can be interacted with.
+
+7. **Interact with Light Switch**  
+   Clicking on the light switch toggles the light on or off and animates the pulling of the switch for a more interactive experience.
+
