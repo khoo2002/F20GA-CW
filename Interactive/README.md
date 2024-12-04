@@ -34,7 +34,7 @@ Step 2: Exporting the Model Once the model was optimized and split into four par
 
 ![image](https://github.com/user-attachments/assets/bbf72fcf-818f-4d96-975c-fe3e5dc4c00b)
 
-Step 3: Importing the Model into Three.js(WebGPU library) and WebGPU(WebGPU library) With the files ready, I wrote a Three.js script to handle importing and setting up the model in the scene. The script starts by creating a basic Three.js scene with a plane and a camera to provide a view of the lamp. The plane acts as the ground, and the camera is positioned strategically to showcase the entire model.
+Step 3: Importing the Model into Three.js(WebGPU library) and WebGPU(WebGPU library) With the files ready, I wrote a js script to handle importing and setting up the model in the scene. The script starts by creating a basic Three.js scene with a plane and a camera to provide a view of the lamp. The plane acts as the ground, and the camera is positioned strategically to showcase the entire model.
 
 ![image](https://github.com/user-attachments/assets/37d2c109-068b-461e-8610-9af8c97bac1b)
 
