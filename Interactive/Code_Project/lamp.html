@@ -21,11 +21,12 @@
   <script type="importmap">
     {
       "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js",
-        "three/examples/jsm/loaders/OBJLoader": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/loaders/OBJLoader.js",
-        "three/examples/jsm/loaders/MTLLoader": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/loaders/MTLLoader.js",
-        "three/examples/jsm/controls/OrbitControls": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/controls/OrbitControls.js",
-        "three/examples/jsm/controls/FlyControls": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/controls/FlyControls.js",
+        "three": "https://cdn.jsdelivr.net/npm/three@0.166.0/build/three.module.js",
+        "three/examples/jsm/renderers/webgpu/WebGPURenderer": "https://cdn.jsdelivr.net/npm/three@0.166.0/examples/jsm/renderers/webgpu/WebGPURenderer.js",
+        "three/examples/jsm/loaders/OBJLoader": "https://cdn.jsdelivr.net/npm/three@0.166.0/examples/jsm/loaders/OBJLoader.js",
+        "three/examples/jsm/loaders/MTLLoader": "https://cdn.jsdelivr.net/npm/three@0.166.0/examples/jsm/loaders/MTLLoader.js",
+        "three/examples/jsm/controls/OrbitControls": "https://cdn.jsdelivr.net/npm/three@0.166.0/examples/jsm/controls/OrbitControls.js",
+        "three/examples/jsm/controls/FlyControls": "https://cdn.jsdelivr.net/npm/three@0.166.0/examples/jsm/controls/FlyControls.js",
         "tween": "https://cdnjs.cloudflare.com/ajax/libs/tween.js/25.0.0/tween.umd.js"
       }
     }
@@ -45,6 +46,7 @@
     import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
     import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
     import { FlyControls } from 'three/examples/jsm/controls/FlyControls';
+    import WebGPURenderer from 'three/examples/jsm/renderers/webgpu/WebGPURenderer';
 
     // Create the scene
     const scene = new THREE.Scene();
@@ -52,8 +54,8 @@
     // Set up the camera with a field of view of 75 degrees and an aspect ratio based on the window size
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-    // Create the WebGL renderer and attach it to the document body
-    const renderer = new THREE.WebGLRenderer();
+    // Create the WebGPU renderer and attach it to the document body
+    const renderer = new WebGPURenderer();
     document.body.appendChild(renderer.domElement);
 
     // Position the camera and set its view to look at the center of the scene
